@@ -19,10 +19,11 @@ resource "aws_codepipeline" "codepipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        Owner  = "deanillfeld"
-        Repo   = "ecs-poc"
-        Branch = "master"
-        OAuthToken = data.aws_ssm_parameter.github_pat.value
+        Owner                = "deanillfeld"
+        Repo                 = "ecs-poc"
+        Branch               = "master"
+        OAuthToken           = data.aws_ssm_parameter.github_pat.value
+        PollForSourceChanges = false
       }
     }
   }
@@ -31,12 +32,12 @@ resource "aws_codepipeline" "codepipeline" {
     name = "Docker_Build"
 
     action {
-      name             = "Build"
-      category         = "Build"
-      owner            = "AWS"
-      provider         = "CodeBuild"
-      input_artifacts  = ["source_output"]
-      version          = "1"
+      name            = "Build"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["source_output"]
+      version         = "1"
 
       configuration = {
         ProjectName = "ecs-poc-docker"
@@ -48,12 +49,12 @@ resource "aws_codepipeline" "codepipeline" {
     name = "Terraform_Plan"
 
     action {
-      name             = "Build"
-      category         = "Build"
-      owner            = "AWS"
-      provider         = "CodeBuild"
-      input_artifacts  = ["source_output"]
-      version          = "1"
+      name            = "Build"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["source_output"]
+      version         = "1"
 
       configuration = {
         ProjectName = "ecs-poc-tfplan"
@@ -65,16 +66,32 @@ resource "aws_codepipeline" "codepipeline" {
     name = "Terraform_Apply"
 
     action {
-      name             = "Build"
-      category         = "Build"
-      owner            = "AWS"
-      provider         = "CodeBuild"
-      input_artifacts  = ["source_output"]
-      version          = "1"
+      name            = "Build"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["source_output"]
+      version         = "1"
 
       configuration = {
         ProjectName = "ecs-poc-tfapply"
       }
     }
+  }
+}
+
+resource "aws_codepipeline_webhook" "ecs_poc" {
+  name            = "ecs-poc"
+  authentication  = "GITHUB_HMAC"
+  target_action   = "Source"
+  target_pipeline = aws_codepipeline.codepipeline.name
+
+  authentication_configuration {
+    secret_token = random_string.github_secret.result
+  }
+
+  filter {
+    json_path    = "$.ref"
+    match_equals = "refs/heads/{Branch}"
   }
 }
