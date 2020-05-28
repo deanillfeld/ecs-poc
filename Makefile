@@ -7,4 +7,4 @@ dockerBuild:
 	docker build -t 722141136946.dkr.ecr.ap-southeast-2.amazonaws.com/nginxdemo:$(GIT_COMMIT) app
 
 dockerPush: dockerLogin
-	docker push 722141136946.dkr.ecr.ap-southeast-2.amazonaws.com/nginxdemo:$(GIT_COMMIT) app
+	docker push 722141136946.dkr.ecr.ap-southeast-2.amazonaws.com/nginxdemo:$(GIT_COMMIT)
