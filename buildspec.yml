@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to ECR...
+      - aws ecr get-login-password | docker login --username AWS --password-stdin 722141136946.dkr.ecr.ap-southeast-2.amazonaws.com
+  build:
+    commands:
+      - echo Starting docker build...
+      - docker build -t 722141136946.dkr.ecr.ap-southeast-2.amazonaws.com/nginxdemo:$CODEBUILD_RESOLVED_SOURCE_VERSION
+  post_build:
+    commands:
+      - echo Pushing to ECR...
+      - docker push 722141136946.dkr.ecr.ap-southeast-2.amazonaws.com/nginxdemo:$CODEBUILD_RESOLVED_SOURCE_VERSION

@@ -1,5 +1,5 @@
-resource "aws_ecr_repository" "app" {
-  name                 = "app"
+resource "aws_ecr_repository" "nginxdemo" {
+  name                 = "nginxdemo"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
