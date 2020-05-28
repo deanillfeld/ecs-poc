@@ -32,7 +32,7 @@ resource "aws_codepipeline" "codepipeline" {
     name = "Docker_Build"
 
     action {
-      name            = "Build"
+      name            = "Docker_Build"
       category        = "Build"
       owner           = "AWS"
       provider        = "CodeBuild"
@@ -49,7 +49,7 @@ resource "aws_codepipeline" "codepipeline" {
     name = "Terraform_Plan"
 
     action {
-      name            = "Build"
+      name            = "Terraform_Plan"
       category        = "Build"
       owner           = "AWS"
       provider        = "CodeBuild"
@@ -63,10 +63,22 @@ resource "aws_codepipeline" "codepipeline" {
   }
 
   stage {
+    name = "Approval"
+
+    action {
+      name     = "Approval"
+      category = "Approval"
+      owner    = "AWS"
+      version  = "1"
+      provider = "Manual"
+    }
+  }
+
+  stage {
     name = "Terraform_Apply"
 
     action {
-      name            = "Build"
+      name            = "Terraform_Apply"
       category        = "Build"
       owner           = "AWS"
       provider        = "CodeBuild"
