@@ -1,5 +1,5 @@
 ifdef CODEBUILD_BUILD_ARN
-	GIT_COMMIT = $(shell echo CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 7)
+	GIT_COMMIT = $(shell echo $$CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 7)
 endif
 
 dockerLogin:
